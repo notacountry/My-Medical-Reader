@@ -1,14 +1,14 @@
-import { StyleSheet } from 'react-native';
-import { nhsukLinkColor, nhsukWhite, spacingPoints } from '../../globals';
+import { StyleSheet } from 'react-native'
+import { colors, spacingPoints } from '../../globals'
 
 const styles = StyleSheet.create({
   appBottomNavNative: {
-    backgroundColor: nhsukLinkColor,
+    backgroundColor: colors.nhsukLinkColor,
     bottom: 0,
     paddingBottom: 8,
     position: 'absolute',
     left: 0,
-    width: '100%',
+    width: '100%'
   },
   appBottomNavNativeList: {
     flexDirection: 'row',
@@ -16,13 +16,13 @@ const styles = StyleSheet.create({
     gap: spacingPoints[1],
     margin: 0,
     paddingHorizontal: 10,
-    width: '100%',
+    width: '100%'
   },
   appBottomNavNativeItem: {
     lineHeight: 1,
     margin: 0,
     padding: 0,
-    width: '25%',
+    width: '25%'
   },
   appBottomNavNativeLink: {
     alignItems: 'center',
@@ -30,33 +30,33 @@ const styles = StyleSheet.create({
     gap: spacingPoints[2],
     paddingVertical: 12,
     paddingBottom: 20,
-    textDecorationLine: 'none',
+    textDecorationLine: 'none'
   },
   appIcon: {
-    fill: nhsukWhite,
+    fill: colors.nhsukWhite,
     height: 28,
-    width: 28,
+    width: 28
   },
   nhsappIcon: {
-    fill: nhsukWhite,
+    fill: colors.nhsukWhite,
     height: 28,
-    width: 28,
+    width: 28
   },
   appBottomNavNativeLabel: {
-    color: nhsukWhite,
-    fontSize: 12,
+    color: colors.nhsukWhite,
+    fontSize: 12
   },
   appBottomNavNativeLabelActive: {
-    fontWeight: 'bold',
+    fontWeight: 'bold'
   },
   nhsukWidthContainer: {
     width: '100%',
-    paddingHorizontal: 10,
+    paddingHorizontal: 10
   },
   nhsukGridRow: {
     flexDirection: 'row',
     justifyContent: 'center'
-  },
-});
+  }
+})
 
-export default styles;
+export default styles
