@@ -3,9 +3,13 @@ import { Text, View, TouchableOpacity, StyleSheet, Alert, Image, ActivityIndicat
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+const BACKEND_URL = 'http://192.168.1.102:8000'; // Your computer's IP address
+
 export default function Upload() {
   const [image, setImage] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [processedImage, setProcessedImage] = useState(null);
+  const [extractedText, setExtractedText] = useState(null);
 
   const pickImage = async () => {
     try {
@@ -32,7 +36,7 @@ export default function Upload() {
       if (!result.canceled) {
         console.log('Image selected:', result.assets[0].uri);
         setImage(result.assets[0].uri);
-        await saveImageToMessages(result.assets[0]);
+        await processAndSaveImage(result.assets[0]);
       } else {
         console.log('Image selection cancelled');
       }
@@ -44,31 +48,53 @@ export default function Upload() {
     }
   };
 
-  const saveImageToMessages = async (imageAsset) => {
+  const processAndSaveImage = async (imageAsset) => {
     try {
-      // Get existing messages
-      const existingMessagesJson = await AsyncStorage.getItem('messages');
-      const existingMessages = existingMessagesJson ? JSON.parse(existingMessagesJson) : [];
-      
-      // Create new message object
-      const newMessage = {
-        id: Date.now().toString(),
-        type: 'image',
-        content: imageAsset.uri,
-        timestamp: new Date().toISOString(),
-        base64: imageAsset.base64,
-      };
+      // Process image with backend
+      const response = await fetch(`${BACKEND_URL}/process-image`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          image_data: imageAsset.base64
+        }),
+      });
 
-      // Add new message to the beginning of the array
-      const updatedMessages = [newMessage, ...existingMessages];
+      const result = await response.json();
       
-      // Save back to AsyncStorage
-      await AsyncStorage.setItem('messages', JSON.stringify(updatedMessages));
-      
-      Alert.alert('Success', 'Image saved to messages!');
+      if (result.success) {
+        setProcessedImage(`data:image/png;base64,${result.processed_image}`);
+        setExtractedText(result.extracted_text);
+        
+        // Save to messages with processed data
+        const newMessage = {
+          id: Date.now().toString(),
+          type: 'image',
+          content: imageAsset.uri,
+          processedImage: result.processed_image,
+          extractedText: result.extracted_text,
+          timestamp: new Date().toISOString(),
+          base64: imageAsset.base64,
+        };
+
+        // Get existing messages
+        const existingMessagesJson = await AsyncStorage.getItem('messages');
+        const existingMessages = existingMessagesJson ? JSON.parse(existingMessagesJson) : [];
+        
+        // Add new message to the beginning of the array
+        const updatedMessages = [newMessage, ...existingMessages];
+        
+        // Save back to AsyncStorage
+        await AsyncStorage.setItem('messages', JSON.stringify(updatedMessages));
+        
+        Alert.alert('Success', 'Image processed and saved to messages!');
+      } else {
+        throw new Error(result.error || 'Failed to process image');
+      }
     } catch (error) {
-      console.error('Error saving image to messages:', error);
-      Alert.alert('Error', 'Failed to save image to messages');
+      console.error('Error processing image:', error);
+      Alert.alert('Error', 'Failed to process image with backend');
     }
   };
 
@@ -81,9 +107,25 @@ export default function Upload() {
         {image ? (
           <View style={styles.previewContainer}>
             <Image source={{ uri: image }} style={styles.preview} />
+            {processedImage && (
+              <View style={styles.processedContainer}>
+                <Text style={styles.processedTitle}>Processed Image:</Text>
+                <Image source={{ uri: processedImage }} style={styles.processedPreview} />
+                {extractedText && (
+                  <View style={styles.textContainer}>
+                    <Text style={styles.textTitle}>Extracted Text:</Text>
+                    <Text style={styles.extractedText}>{extractedText}</Text>
+                  </View>
+                )}
+              </View>
+            )}
             <TouchableOpacity 
               style={[styles.button, styles.retryButton]} 
-              onPress={() => setImage(null)}
+              onPress={() => {
+                setImage(null);
+                setProcessedImage(null);
+                setExtractedText(null);
+              }}
             >
               <Text style={styles.buttonText}>Choose Different Image</Text>
             </TouchableOpacity>
@@ -154,6 +196,35 @@ const styles = StyleSheet.create({
     height: 300,
     resizeMode: 'contain',
     marginBottom: 20,
+  },
+  processedContainer: {
+    width: '100%',
+    marginTop: 20,
+  },
+  processedTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 10,
+  },
+  processedPreview: {
+    width: '100%',
+    height: 300,
+    resizeMode: 'contain',
+    marginBottom: 20,
+  },
+  textContainer: {
+    width: '100%',
+    marginTop: 20,
+  },
+  textTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 10,
+  },
+  extractedText: {
+    fontSize: 16,
+    color: '#333',
+    lineHeight: 24,
   },
   retryButton: {
     backgroundColor: '#FF3B30',

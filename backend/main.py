@@ -1,16 +1,11 @@
-from fastapi import FastAPI, UploadFile, File, HTTPException, Depends
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from typing import List
-import uvicorn
-from pathlib import Path
-import os
-from dotenv import load_dotenv
-from app.processors.document_processor import DocumentProcessor
-from app.database import get_db
-from sqlalchemy.orm import Session
-
-# Load environment variables
-load_dotenv()
+import cv2
+import numpy as np
+from PIL import Image
+import io
+import easyocr
+import base64
 
 app = FastAPI(title="Medical Document Processor API")
 
@@ -23,60 +18,84 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Create uploads directory if it doesn't exist
-UPLOAD_DIR = Path("uploads")
-UPLOAD_DIR.mkdir(exist_ok=True)
+# Initialize EasyOCR reader
+reader = easyocr.Reader(['en'])
 
-# Initialize document processor
-document_processor = DocumentProcessor()
+def preprocess_image(image: np.ndarray) -> np.ndarray:
+    """
+    Preprocess the image to make it more uniform and suitable for OCR.
+    """
+    # Convert to grayscale
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    
+    # Apply adaptive thresholding instead of global thresholding
+    gray = cv2.adaptiveThreshold(
+        gray,
+        255,
+        cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+        cv2.THRESH_BINARY,
+        11,  # Block size
+        2    # C constant
+    )
+    
+    # Apply slight blur to reduce noise while preserving text
+    gray = cv2.GaussianBlur(gray, (3,3), 0)
+    
+    # Enhance contrast
+    clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8,8))
+    gray = clahe.apply(gray)
+    
+    return gray
 
 @app.get("/")
 async def root():
     return {"message": "Welcome to Medical Document Processor API"}
 
-@app.post("/upload/")
-async def upload_document(
-    file: UploadFile = File(...),
-    db: Session = Depends(get_db)
-):
+@app.post("/process-image")
+async def process_image(image_data: dict):
     """
-    Upload a medical document for processing
+    Process an image sent as base64 string.
     """
     try:
-        # Save the uploaded file
-        file_path = UPLOAD_DIR / file.filename
-        with open(file_path, "wb") as buffer:
-            content = await file.read()
-            buffer.write(content)
+        # Decode base64 image
+        image_bytes = base64.b64decode(image_data['image_data'])
+        image = Image.open(io.BytesIO(image_bytes))
         
-        # Process the document
-        processed_data = await document_processor.process_document(file_path)
+        # Convert PIL Image to OpenCV format
+        opencv_image = cv2.cvtColor(np.array(image), cv2.COLOR_RGB2BGR)
         
-        # TODO: Save to database
+        # Process the image
+        processed_image = preprocess_image(opencv_image)
+        
+        # Extract text using EasyOCR
+        results = reader.readtext(processed_image)
+        extracted_text = ' '.join([result[1] for result in results])
+        
+        # Convert processed image back to base64 for sending back
+        _, buffer = cv2.imencode('.png', processed_image)
+        processed_image_base64 = base64.b64encode(buffer).decode('utf-8')
         
         return {
-            "message": "Document processed successfully",
-            "filename": file.filename,
-            "processed_data": processed_data
+            "success": True,
+            "processed_image": processed_image_base64,
+            "extracted_text": extracted_text
         }
+        
     except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+        print(f"Error processing image: {str(e)}")  # Add logging
+        return {
+            "success": False,
+            "error": str(e)
+        }
 
-@app.get("/documents/")
-async def list_documents(db: Session = Depends(get_db)):
+@app.get("/health")
+async def health_check():
     """
-    List all processed documents
+    Health check endpoint.
     """
-    # TODO: Implement document listing from database
-    return {"documents": []}
-
-@app.get("/documents/{document_id}")
-async def get_document(document_id: str, db: Session = Depends(get_db)):
-    """
-    Get a specific document's details, summary, and resources
-    """
-    # TODO: Implement document retrieval from database
-    return {"document_id": document_id, "status": "not implemented"}
+    return {"status": "healthy"}
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True) 
+    import uvicorn
+    print("Starting server...")  # Add logging
+    uvicorn.run(app, host="0.0.0.0", port=8000) 

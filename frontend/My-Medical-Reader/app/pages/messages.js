@@ -82,7 +82,7 @@ export default function Messages() {
         <View style={styles.card}>
           <View style={styles.cardContent}>
             <Image 
-              source={{ uri: item.content }} 
+              source={{ uri: item.processedImage ? `data:image/png;base64,${item.processedImage}` : item.content }} 
               style={styles.documentImage}
               resizeMode="cover"
             />
@@ -92,6 +92,11 @@ export default function Messages() {
                   {new Date(item.timestamp).toLocaleString()}
                 </Text>
                 <Text style={styles.documentType}>Medical Document</Text>
+                {item.extractedText && (
+                  <Text style={styles.previewText} numberOfLines={2}>
+                    {item.extractedText}
+                  </Text>
+                )}
               </View>
               <View style={styles.cardActions}>
                 <TouchableOpacity 
@@ -220,5 +225,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#666',
     marginTop: 20,
+  },
+  previewText: {
+    fontSize: 14,
+    color: '#666',
+    marginTop: 8,
+    fontStyle: 'italic',
   },
 });
