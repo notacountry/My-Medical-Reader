@@ -1,50 +1,80 @@
-# Welcome to your Expo app 👋
+# My Medical Reader
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A React Native application for uploading and managing medical documents.
 
-## Get started
+## Features
 
-1. Install dependencies
+- Upload medical documents from camera roll
+- View uploaded documents in a card-based interface
+- Favorite documents for quick access
+- Delete documents with confirmation
+- Persistent storage of documents
 
-   ```bash
-   npm install
-   ```
+## Prerequisites
 
-2. Start the app
+- Node.js (v14 or later)
+- npm or yarn
+- Expo CLI (`npm install -g expo-cli`)
+- Expo Go app on your mobile device (for testing)
 
-   ```bash
-    npx expo start
-   ```
+## Installation
 
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
+1. Clone the repository:
 ```bash
-npm run reset-project
+git clone <repository-url>
+cd frontend/My-Medical-Reader
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+2. Install dependencies:
+```bash
+npm install
+```
 
-## Learn more
+3. Start the development server:
+```bash
+npm start
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+4. Scan the QR code with your mobile device:
+- iOS: Use the Camera app
+- Android: Use the Expo Go app
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Usage
 
-## Join the community
+### Uploading Documents
+1. Navigate to the Upload tab
+2. Tap "Select Image" to choose a medical document from your camera roll
+3. The document will be automatically saved and appear in the Messages tab
 
-Join our community of developers creating universal apps.
+### Managing Documents
+1. View all uploaded documents in the Messages tab
+2. Tap the star icon to favorite a document (moves to top of list)
+3. Tap the trash icon to delete a document (with confirmation)
+4. Documents are displayed with their upload timestamp
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## Dependencies
+
+Key dependencies include:
+- `expo-image-picker`: For selecting images from camera roll
+- `@react-native-async-storage/async-storage`: For persistent storage
+- `@expo/vector-icons`: For UI icons
+- `expo`: Core Expo framework
+- `react-native`: React Native framework
+
+## Development
+
+- The app uses Expo Router for navigation
+- Documents are stored locally using AsyncStorage
+- Images are stored with base64 encoding for future backend processing
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a new Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
