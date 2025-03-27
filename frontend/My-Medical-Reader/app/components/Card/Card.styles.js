@@ -1,22 +1,22 @@
 import { StyleSheet } from 'react-native'
-import { spacingPoints, colors } from '../../globals'
+import globals from '../../styles/globals'
 
 const cardBorderWidth = 1
-const cardBorderColor = colors.nhsukGrey4
-const cardBorderHoverColor = colors.nhsukGrey3
-const nhsukLinkHoverColor = colors.nhsukLinkHover
+const cardBorderColor = globals.colors.nhsukGrey4
+const cardBorderHoverColor = globals.colors.nhsukGrey3
+const nhsukLinkHoverColor = globals.colors.nhsukLinkHover
 
-export const styles = StyleSheet.create({
+const styles = StyleSheet.create({
   card: {
-    marginBottom: spacingPoints[5],
-    backgroundColor: colors.nhsukWhite,
+    marginBottom: globals.spacingPoints[5],
+    backgroundColor: globals.colors.nhsukWhite,
     borderWidth: cardBorderWidth,
     borderColor: cardBorderColor,
     position: 'relative',
     padding: 0
   },
   cardTitle: {
-    color: colors.nhsukLinkColor,
+    color: globals.colors.nhsukLinkColor,
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 0
@@ -26,20 +26,20 @@ export const styles = StyleSheet.create({
     width: 24,
     flexShrink: 0,
     // React Native doesn't have direct fill, might need to use tintColor
-    fill: colors.nhsukLinkColor
+    fill: globals.colors.nhsukLinkColor
   },
   cardContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacingPoints[3],
-    marginHorizontal: spacingPoints[3],
+    gap: globals.spacingPoints[3],
+    marginHorizontal: globals.spacingPoints[3],
     paddingVertical: 20
   },
   cardContent: {
     flexGrow: 1
   },
   cardLink: {
-    color: colors.nhsukLinkColor,
+    color: globals.colors.nhsukLinkColor,
     fontSize: 22,
     fontWeight: 'bold',
     textDecorationLine: 'none'
@@ -54,16 +54,16 @@ export const styles = StyleSheet.create({
   cardFooter: {
     borderTopWidth: cardBorderWidth,
     borderTopColor: cardBorderColor,
-    marginHorizontal: spacingPoints[3],
+    marginHorizontal: globals.spacingPoints[3],
     paddingVertical: 20
   },
   cards: {
-    marginBottom: spacingPoints[5],
+    marginBottom: globals.spacingPoints[5],
     listStyleType: 'none',
     padding: 0
   },
   cardsStacked: {
-    marginBottom: spacingPoints[5]
+    marginBottom: globals.spacingPoints[5]
   },
   cardsStackedItem: {
     borderBottomWidth: 0,
@@ -84,15 +84,17 @@ export const styles = StyleSheet.create({
     borderBottomWidth: 0
   },
   cardsHeadingTopMargin: {
-    paddingTop: spacingPoints[4]
+    paddingTop: globals.spacingPoints[4]
   },
   cardsHeadingSmallTopMargin: {
-    paddingTop: spacingPoints[1]
+    paddingTop: globals.spacingPoints[1]
   },
   cardsHeadingMediumTopMarginTablet: {
-    paddingTop: spacingPoints[2]
+    paddingTop: globals.spacingPoints[2]
   },
   nhsukUMarginTop1: {
-    marginTop: spacingPoints[1]
+    marginTop: globals.spacingPoints[1]
   }
 })
+
+export default styles
