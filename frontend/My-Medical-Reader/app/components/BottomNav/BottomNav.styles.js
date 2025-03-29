@@ -1,9 +1,9 @@
 import { StyleSheet } from 'react-native'
-import globals from '../../styles/globals'
+import { colors, spacingPoints } from '../../globals'
 
 const styles = StyleSheet.create({
   appBottomNavNative: {
-    backgroundColor: globals.colors.nhsukLinkColor,
+    backgroundColor: colors.nhsukLinkColor,
     bottom: 0,
     paddingBottom: 8,
     position: 'absolute',
@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   appBottomNavNativeList: {
     flexDirection: 'row',
     justifyContent: 'space-around',
-    gap: globals.spacingPoints[1],
+    gap: spacingPoints[1],
     margin: 0,
     paddingHorizontal: 10,
     width: '100%'
@@ -27,23 +27,23 @@ const styles = StyleSheet.create({
   appBottomNavNativeLink: {
     alignItems: 'center',
     flexDirection: 'column',
-    gap: globals.spacingPoints[2],
+    gap: spacingPoints[2],
     paddingVertical: 12,
     paddingBottom: 20,
     textDecorationLine: 'none'
   },
   appIcon: {
-    fill: globals.colors.nhsukWhite,
+    fill: colors.nhsukWhite,
     height: 28,
     width: 28
   },
   nhsappIcon: {
-    fill: globals.colors.nhsukWhite,
+    fill: colors.nhsukWhite,
     height: 28,
     width: 28
   },
   appBottomNavNativeLabel: {
-    color: globals.colors.nhsukWhite,
+    color: colors.nhsukWhite,
     fontSize: 12
   },
   appBottomNavNativeLabelActive: {

@@ -1,6 +1,6 @@
 import React from 'react'
 import { View, Text, TouchableOpacity, Image } from 'react-native'
-import styles from './Card.styles' // Assuming you have card styles
+import { styles } from './Card.styles' // Assuming you have card styles
 import ChevronRight from 'nhsapp-frontend/dist/assets/icons/chevron-right.svg'
 
 // Replicating the nhsappBadgeLarge component (you'll need to implement this)

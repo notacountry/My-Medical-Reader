@@ -7,8 +7,8 @@ import home from 'nhsapp-frontend/dist/assets/icons/home.svg'
 import homeFilled from 'nhsapp-frontend/dist/assets/icons/home-filled.svg'
 import upload from 'nhsapp-frontend/dist/assets/icons/cross.svg'
 import uploadFilled from 'nhsapp-frontend/dist/assets/icons/cross-filled.svg'
-import documents from 'nhsapp-frontend/dist/assets/icons/messages.svg'
-import documentsFilled from 'nhsapp-frontend/dist/assets/icons/messages-filled.svg'
+import messages from 'nhsapp-frontend/dist/assets/icons/messages.svg'
+import messagesFilled from 'nhsapp-frontend/dist/assets/icons/messages-filled.svg'
 
 function BottomNav ({ hub }) {
   const router = useRouter()
@@ -25,9 +25,9 @@ function BottomNav ({ hub }) {
       route: 'pages/upload'
     },
     {
-      name: 'Documents',
-      icon: hub === 'Documents' ? documentsFilled : documents,
-      route: 'pages/documents'
+      name: 'Messages',
+      icon: hub === 'Messages' ? messagesFilled : messages,
+      route: 'pages/messages'
     }
   ]
 

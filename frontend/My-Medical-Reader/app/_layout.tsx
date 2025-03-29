@@ -1,6 +1,6 @@
 import React from 'react'
 import { Slot, usePathname } from 'expo-router'
-import { View } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 import BottomNav from './components/BottomNav/BottomNav'
 
 const AppLayout = () => {
@@ -13,8 +13,8 @@ const AppLayout = () => {
         return 'Home'
       case '/pages/upload':
         return 'Upload'
-      case '/pages/documents':
-        return 'Documents'
+      case '/pages/messages':
+        return 'Messages'
       default:
         return 'Home' // Default hub
     }
